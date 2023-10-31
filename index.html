@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SurfTricks Debug Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #121212 0%, #000000 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px 0px #000000;
+            padding: 20px;
+            width: 70%;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        #debugInput {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 20px;
+            resize: none;
+            border: 1px solid #444;
+            border-radius: 5px;
+            box-sizing: border-box;
+            color: #fff;
+            background: #333;
+        }
+
+        #extractButton, #resetButton {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #extractButton {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #resetButton {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #triggerList {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 60px;
+        }
+
+        #triggerList li {
+            margin: 5px 0;
+            padding: 10px;
+            background: #2f2f2f;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #triggerList li.copied {
+            background-color: #4CAF50;
+        }
+
+        #copiedMessage {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #copiedMessage.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SurfTricks Debug Extractor</h1>
+        <textarea id="debugInput" placeholder="Paste your debug output here">1st: [T-Spawn] (G: 0) [J: x1]
+2nd: [Main Ramp] (G: 0)
+3rd: [Center Wedge] (G: 0)
+4th: [Middle Wing] (G: 0)
+5th: [T2 Left Wing] (G: 0)</textarea>
+        <button id="extractButton" onclick="extractTriggerNames()">Extract Triggers</button>
+        <button id="resetButton" onclick="resetTriggers()">Reset</button>
+        <h2>Triggers:</h2>
+        <ul id="triggerList"></ul>
+        <div id="copiedMessage">Copied Trigger: <span id="copiedTrigger"></span></div>
+        <div id="errorMessage" style="display: none;">Invalid input format!</div>
+    </div>
+
+    <script>
+        function extractTriggerNames() {
+            const debugText = document.getElementById('debugInput').value;
+            const regex = /(\d+\w+): \[([^\]]*)\]/g;
+
+            const triggerList = document.getElementById('triggerList');
+            triggerList.innerHTML = '';
+
+            let match;
+            while (match = regex.exec(debugText)) {
+                const listItem = document.createElement('li');
+                const triggerName = match[2];
+                listItem.textContent = match[1] + ": " + triggerName;
+                listItem.onclick = function() {
+                    copyToClipboard(triggerName, listItem);
+                };
+                triggerList.appendChild(listItem);
+            }
+        }
+
+        function copyToClipboard(text, trigger) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    trigger.classList.add('copied');
+                    showCopySuccess(text);
+                })
+                .catch(err => console.error('Failed to copy: ', err));
+        }
+
+        function showCopySuccess(text) {
+            const copiedMessage = document.getElementById('copiedMessage');
+            const copiedTrigger = document.getElementById('copiedTrigger');
+            copiedTrigger.innerText = text;
+            copiedMessage.classList.add('show');
+            setTimeout(() => {
+                copiedMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function resetTriggers() {
+            const triggerList = document.getElementById('triggerList');
+            triggerList.innerHTML = '';
+            const debugInput = document.getElementById('debugInput');
+            debugInput.value = '';
+        }
+    </script>
+</body>
+</html>
