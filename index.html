@@ -1,35 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SurfTricks Debug Extractor</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #121212 0%, #000000 100%);
+            background-color: #121212;
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
         .container {
-            background-color: #1f1f1f;
+            background-color: #333;
             border-radius: 10px;
-            box-shadow: 0px 0px 15px 0px #000000;
+            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
             width: 70%;
             max-width: 600px;
             text-align: center;
             margin-top: 20px;
             position: relative;
+            box-sizing: border-box;
+            transition: background-color 0.5s;
         }
 
         h1 {
             text-align: center;
             margin-top: 0;
+            color: #61dafb;
+            font-size: 2em;
+            letter-spacing: 2px;
+            transition: color 0.5s;
         }
 
         #debugInput {
@@ -41,8 +51,10 @@
             border: 1px solid #444;
             border-radius: 5px;
             box-sizing: border-box;
-            color: #fff;
-            background: #333;
+            color: #333;
+            background: #fff;
+            font-size: 1em;
+            transition: background-color 0.5s, color 0.5s;
         }
 
         #extractButton, #resetButton {
@@ -51,16 +63,26 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: bold;
         }
 
         #extractButton {
-            background-color: #3498db;
-            color: white;
+            background-color: #61dafb;
+            color: #fff;
+        }
+
+        #extractButton:hover {
+            background-color: #4fa3d1;
         }
 
         #resetButton {
             background-color: #e74c3c;
-            color: white;
+            color: #fff;
+        }
+
+        #resetButton:hover {
+            background-color: #c0392b;
         }
 
         #triggerList {
@@ -76,20 +98,24 @@
         #triggerList li {
             margin: 5px 0;
             padding: 10px;
-            background: #2f2f2f;
+            background: #444;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
+            color: #61dafb;
+            font-weight: bold;
+            font-size: 1.1em;
         }
 
         #triggerList li.copied {
-            background-color: #4CAF50;
+            background-color: #27ae60 !important;
+            color: #fff;
         }
 
         #copiedMessage {
             padding: 10px;
-            background-color: #3498db;
-            color: white;
+            background-color: #61dafb;
+            color: #fff;
             border-radius: 5px;
             position: absolute;
             bottom: 20px;
@@ -103,6 +129,31 @@
         #copiedMessage.show {
             opacity: 1;
         }
+
+        #errorMessage {
+            display: none;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        #goToTopButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #61dafb;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: none;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: bold;
+        }
+
+        #goToTopButton:hover {
+            background-color: #4fa3d1;
+        }
     </style>
 </head>
 <body>
@@ -112,14 +163,17 @@
 2nd: [Main Ramp] (G: 0)
 3rd: [Center Wedge] (G: 0)
 4th: [Middle Wing] (G: 0)
-5th: [T2 Left Wing] (G: 0)</textarea>
+5th: [T2 Left Wing] (G: 0)
+</textarea>
         <button id="extractButton" onclick="extractTriggerNames()">Extract Triggers</button>
         <button id="resetButton" onclick="resetTriggers()">Reset</button>
         <h2>Triggers:</h2>
         <ul id="triggerList"></ul>
         <div id="copiedMessage">Copied Trigger: <span id="copiedTrigger"></span></div>
-        <div id="errorMessage" style="display: none;">Invalid input format!</div>
+        <div id="errorMessage">Invalid input format!</div>
     </div>
+
+    <button id="goToTopButton" onclick="goToTop()">Go to Top</button>
 
     <script>
         function extractTriggerNames() {
@@ -166,6 +220,23 @@
             const debugInput = document.getElementById('debugInput');
             debugInput.value = '';
         }
+
+        function goToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onscroll = function() {
+            const goToTopButton = document.getElementById('goToTopButton');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                goToTopButton.style.display = 'block';
+            } else {
+                goToTopButton.style.display = 'none';
+            }
+        };
+
+        document.getElementById('extractButton').addEventListener('click', extractTriggerNames);
+        document.getElementById('resetButton').addEventListener('click', resetTriggers);
+        document.getElementById('goToTopButton').addEventListener('click', goToTop);
     </script>
 </body>
 </html>
