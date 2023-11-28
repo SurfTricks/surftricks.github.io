@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212;
+            background: linear-gradient(135deg, #121212 0%, #000000 100%);
             color: #fff;
             display: flex;
             justify-content: center;
@@ -17,19 +17,19 @@
             min-height: 100vh;
             overflow-y: auto;
             scroll-behavior: smooth;
+            transition: background 0.5s;
         }
 
         .container {
-            background-color: #333;
+            background-color: #1f1f1f;
             border-radius: 10px;
-            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 0px 15px 0px #000000;
             padding: 20px;
             width: 70%;
             max-width: 600px;
             text-align: center;
             margin-top: 20px;
             position: relative;
-            box-sizing: border-box;
             transition: background-color 0.5s;
         }
 
@@ -51,8 +51,8 @@
             border: 1px solid #444;
             border-radius: 5px;
             box-sizing: border-box;
-            color: #333;
-            background: #fff;
+            color: #fff;
+            background: #333;
             font-size: 1em;
             transition: background-color 0.5s, color 0.5s;
         }
@@ -222,7 +222,10 @@
         }
 
         function goToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
 
         window.onscroll = function() {
